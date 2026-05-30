@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import SaasCard from "@/components/SaasCard";
-import Benefits from "@/components/Benefits";
 import HowItWorks from "@/components/HowItWorks";
 import Segments from "@/components/Segments";
 import Footer from "@/components/Footer";
@@ -13,7 +12,6 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
-      <Benefits />
 
       {/* SaaS Catalog */}
       <section id="solucoes" className="py-24">
@@ -44,24 +42,24 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-surface-low to-surface-high border border-primary/20 rounded-2xl p-8 sm:p-12 text-center">
             <h2 className="font-sora text-3xl sm:text-4xl font-bold mb-4">
-              Pronto para transformar seu negócio?
+              Precisa de um SaaS sob medida?
             </h2>
             <p className="text-on-surface-variant text-lg max-w-2xl mx-auto mb-8">
-              Junte-se a mais de 10.000 empresas que já utilizam soluções do
-              SelectSaaS para crescer com mais eficiência.
+              Desenvolvemos soluções personalizadas para o seu segmento e necessidade.
+              Conte-nos sobre o seu negócio e receba uma análise.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="#solucoes"
+                href="/solicitar-saas"
                 className="px-8 py-4 bg-primary text-primary-on font-semibold rounded-lg glow hover:bg-primary-dim transition-all"
               >
-                Ver todas as soluções
+                Solicitar SaaS personalizado
               </a>
               <a
                 href="#contato"
                 className="px-8 py-4 border border-surface-highest text-on-surface-variant hover:border-primary/40 hover:text-primary rounded-lg transition-all"
               >
-                Falar com especialista
+                Falar com a equipe
               </a>
             </div>
           </div>

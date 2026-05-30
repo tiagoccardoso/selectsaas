@@ -8,6 +8,8 @@ interface SaasCardProps {
 }
 
 export default function SaasCard({ product }: SaasCardProps) {
+  const isAvailable = product.status === "available";
+
   return (
     <div className="group relative bg-surface-low border border-surface-high rounded-xl p-6 card-hover flex flex-col">
       {/* Header */}
@@ -23,6 +25,15 @@ export default function SaasCard({ product }: SaasCardProps) {
             {product.segment}
           </span>
         </div>
+        <span
+          className={`text-xs font-semibold px-2.5 py-1 rounded-full border flex-shrink-0 ${
+            isAvailable
+              ? "text-emerald-400 border-emerald-400/40 bg-emerald-400/10"
+              : "text-amber-400 border-amber-400/40 bg-amber-400/10"
+          }`}
+        >
+          {isAvailable ? "Disponível" : "Em breve"}
+        </span>
       </div>
 
       {/* Tagline */}
@@ -43,22 +54,32 @@ export default function SaasCard({ product }: SaasCardProps) {
       </ul>
 
       {/* CTA */}
-      <Link
-        href={`/saas/${product.slug}`}
-        className="block text-center py-3 px-4 rounded-lg border font-medium text-sm transition-all"
-        style={{
-          borderColor: `${product.color}40`,
-          color: product.color,
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLElement).style.backgroundColor = `${product.color}15`;
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
-        }}
-      >
-        Conhecer solução →
-      </Link>
+      {isAvailable && product.externalLink ? (
+        <a
+          href={product.externalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-center py-3 px-4 rounded-lg border font-medium text-sm transition-all"
+          style={{
+            borderColor: `${product.color}40`,
+            color: product.color,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = `${product.color}15`;
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+          }}
+        >
+          Acessar agora →
+        </a>
+      ) : (
+        <div
+          className="block text-center py-3 px-4 rounded-lg border font-medium text-sm text-on-surface-variant/50 border-surface-highest cursor-default"
+        >
+          Em desenvolvimento
+        </div>
+      )}
     </div>
   );
 }

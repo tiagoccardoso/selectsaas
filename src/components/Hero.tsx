@@ -38,21 +38,12 @@ export default function Hero() {
           >
             Como Funciona
           </Link>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-          {[
-            { value: "50+", label: "Soluções disponíveis" },
-            { value: "10k+", label: "Empresas atendidas" },
-            { value: "30+", label: "Segmentos de mercado" },
-            { value: "99.9%", label: "Uptime garantido" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="font-sora text-2xl font-bold text-primary">{stat.value}</div>
-              <div className="text-on-surface-variant text-sm mt-1">{stat.label}</div>
-            </div>
-          ))}
+          <Link
+            href="/solicitar-saas"
+            className="px-8 py-4 border border-primary/40 text-primary hover:bg-primary/10 rounded-lg transition-all text-base"
+          >
+            Solicitar SaaS Personalizado
+          </Link>
         </div>
       </div>
     </section>
