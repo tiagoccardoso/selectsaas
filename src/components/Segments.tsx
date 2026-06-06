@@ -1,16 +1,9 @@
 const segments = [
-  { icon: "🏥", name: "Saúde" },
   { icon: "🦷", name: "Odontologia" },
-  { icon: "🌱", name: "Agronegócio" },
-  { icon: "🚚", name: "Logística" },
+  { icon: "🏥", name: "Fisioterapia" },
+  { icon: "🌱", name: "Agro" },
+  { icon: "💼", name: "Negócios" },
   { icon: "🎓", name: "Educação" },
-  { icon: "🏢", name: "Imobiliário" },
-  { icon: "⚖️", name: "Jurídico" },
-  { icon: "🍽️", name: "Alimentação" },
-  { icon: "💰", name: "Financeiro" },
-  { icon: "🏗️", name: "Construção" },
-  { icon: "🛒", name: "Varejo" },
-  { icon: "💆", name: "Estética & Bem-estar" },
 ];
 
 export default function Segments() {
@@ -27,7 +20,7 @@ export default function Segments() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 max-w-3xl mx-auto">
           {segments.map((segment) => (
             <div
               key={segment.name}

@@ -31,6 +31,8 @@ export default function SaasPage({ params }: { params: { slug: string } }) {
     notFound();
   }
 
+  const isAvailable = product.status === "available";
+
   return (
     <main>
       <Navbar />
@@ -48,7 +50,7 @@ export default function SaasPage({ params }: { params: { slug: string } }) {
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-4 flex-wrap">
                 <span className="text-5xl" role="img" aria-label={product.segment}>
                   {product.segmentIcon}
                 </span>
@@ -57,6 +59,15 @@ export default function SaasPage({ params }: { params: { slug: string } }) {
                   style={{ color: product.color, borderColor: `${product.color}40`, backgroundColor: `${product.color}10` }}
                 >
                   {product.segment}
+                </span>
+                <span
+                  className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
+                    isAvailable
+                      ? "text-emerald-400 border-emerald-400/40 bg-emerald-400/10"
+                      : "text-amber-400 border-amber-400/40 bg-amber-400/10"
+                  }`}
+                >
+                  {isAvailable ? "Disponível" : "Em breve"}
                 </span>
               </div>
 
@@ -73,19 +84,31 @@ export default function SaasPage({ params }: { params: { slug: string } }) {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
+                {isAvailable && product.externalLink ? (
+                  <a
+                    href={product.externalLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-8 py-4 font-semibold rounded-lg transition-all text-center"
+                    style={{ backgroundColor: product.color, color: "#00363f" }}
+                  >
+                    Acessar agora →
+                  </a>
+                ) : (
+                  <a
+                    href="#avisar"
+                    className="px-8 py-4 font-semibold rounded-lg transition-all text-center"
+                    style={{ backgroundColor: product.color, color: "#00363f" }}
+                  >
+                    Quero ser avisado
+                  </a>
+                )}
                 <a
-                  href="#contratar"
-                  className="px-8 py-4 font-semibold rounded-lg transition-all text-center"
-                  style={{ backgroundColor: product.color, color: "#00363f" }}
-                >
-                  Quero este SaaS
-                </a>
-                <a
-                  href="#contratar"
+                  href="#contato"
                   className="px-8 py-4 border font-medium rounded-lg transition-all text-center hover:opacity-80"
                   style={{ borderColor: `${product.color}40`, color: product.color }}
                 >
-                  Solicitar demonstração
+                  Entrar em contato
                 </a>
               </div>
             </div>
@@ -93,7 +116,7 @@ export default function SaasPage({ params }: { params: { slug: string } }) {
             {/* Benefits card */}
             <div className="bg-surface-low border border-surface-high rounded-2xl p-8">
               <h3 className="font-sora text-lg font-semibold mb-6 text-on-surface">
-                Principais benefícios
+                {isAvailable ? "Principais benefícios" : "O que está sendo desenvolvido"}
               </h3>
               <ul className="space-y-4">
                 {product.benefits.map((benefit) => (
@@ -119,7 +142,7 @@ export default function SaasPage({ params }: { params: { slug: string } }) {
       <section className="py-16 bg-surface-low/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-sora text-2xl sm:text-3xl font-bold mb-10 text-center">
-            Funcionalidades principais
+            {isAvailable ? "Funcionalidades disponíveis" : "Funcionalidades previstas"}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {product.features.map((feature) => (
@@ -142,19 +165,20 @@ export default function SaasPage({ params }: { params: { slug: string } }) {
         </div>
       </section>
 
-      {/* Contact / Contratar */}
-      <section id="contratar" className="py-24">
+      {/* Contact / CTA */}
+      <section id="contato" className="py-24">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-sora text-3xl font-bold mb-4">
-              Contratar {product.name}
+              {isAvailable ? `Entre em contato` : `Avisem-me quando lançar`}
             </h2>
             <p className="text-on-surface-variant">
-              Preencha o formulário e nossa equipe entrará em contato para
-              apresentar uma demonstração personalizada.
+              {isAvailable
+                ? "Ficou com alguma dúvida? Nossa equipe está pronta para ajudar."
+                : "Deixe seus dados e avisaremos assim que a solução estiver disponível."}
             </p>
           </div>
-          <div className="bg-surface-low border border-surface-high rounded-2xl p-8">
+          <div className="bg-surface-low border border-surface-high rounded-2xl p-8" id="avisar">
             <ContactForm productName={product.name} productSlug={product.slug} />
           </div>
         </div>

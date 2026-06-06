@@ -45,10 +45,10 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link
-              href="#solucoes"
+              href="/solicitar-saas"
               className="px-4 py-2 text-sm font-medium text-primary border border-primary/40 rounded-lg hover:bg-primary/10 transition-colors"
             >
-              Ver Soluções
+              Solicitar SaaS
             </Link>
           </div>
 
@@ -81,6 +81,13 @@ export default function Navbar() {
                 {href === "#solucoes" ? "Soluções" : href === "#como-funciona" ? "Como Funciona" : href === "#segmentos" ? "Segmentos" : "Contato"}
               </Link>
             ))}
+            <Link
+              href="/solicitar-saas"
+              className="block text-primary hover:text-primary/80 transition-colors py-2 text-sm font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Solicitar SaaS Personalizado
+            </Link>
           </div>
         </div>
       )}
