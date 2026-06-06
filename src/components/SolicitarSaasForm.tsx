@@ -50,11 +50,22 @@ export default function SolicitarSaasForm() {
     e.preventDefault();
     setStatus("loading");
 
-    // Simulated submission — ready for real integration with CRM or API
-    await new Promise((resolve) => setTimeout(resolve, 1800));
-    console.log("SaaS request submitted:", formData);
+    try {
+      const res = await fetch("/api/solicitar-saas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    setStatus("success");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Erro ao enviar");
+      }
+
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {

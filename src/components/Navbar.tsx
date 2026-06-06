@@ -36,6 +36,12 @@ export default function Navbar() {
               Segmentos
             </Link>
             <Link
+              href="/suporte"
+              className="text-on-surface-variant hover:text-primary transition-colors text-sm"
+            >
+              Suporte
+            </Link>
+            <Link
               href="#contato"
               className="text-on-surface-variant hover:text-primary transition-colors text-sm"
             >
@@ -71,14 +77,20 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-surface-low border-b border-surface-high">
           <div className="px-4 py-4 space-y-3">
-            {["#solucoes", "#como-funciona", "#segmentos", "#contato"].map((href) => (
+            {[
+              { href: "#solucoes", label: "Soluções" },
+              { href: "#como-funciona", label: "Como Funciona" },
+              { href: "#segmentos", label: "Segmentos" },
+              { href: "/suporte", label: "Suporte" },
+              { href: "#contato", label: "Contato" },
+            ].map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 className="block text-on-surface-variant hover:text-primary transition-colors py-2 text-sm"
                 onClick={() => setMenuOpen(false)}
               >
-                {href === "#solucoes" ? "Soluções" : href === "#como-funciona" ? "Como Funciona" : href === "#segmentos" ? "Segmentos" : "Contato"}
+                {label}
               </Link>
             ))}
             <Link

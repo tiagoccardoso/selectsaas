@@ -70,9 +70,9 @@ export const saasProducts: SaasProduct[] = [
     name: "Clínicas de Odontologia",
     segment: "Odontologia",
     segmentIcon: "🦷",
-    tagline: "Sistema de gestão odontológica especializado",
+    tagline: "Gestão odontológica completa com SmileHub Admin",
     description:
-      "Solução SaaS para clínicas odontológicas em desenvolvimento. Será construída com foco nas necessidades específicas de dentistas e clínicas, cobrindo gestão de pacientes, procedimentos, finanças e muito mais.",
+      "O SmileHub Admin é um sistema de gestão odontológica já disponível no mercado, desenvolvido para simplificar o dia a dia de dentistas e clínicas. Controle pacientes, agendamentos, tratamentos e finanças em uma única plataforma. Acesse agora pelo painel administrativo.",
     benefits: [
       "Odontograma digital completo",
       "Gestão de tratamentos e orçamentos",
@@ -89,7 +89,8 @@ export const saasProducts: SaasProduct[] = [
       "Acesso via computador e smartphone",
     ],
     color: "#dcb8ff",
-    status: "coming-soon",
+    status: "available",
+    externalLink: "https://www.smilehub.app.br/admin",
   },
   {
     slug: "educacao",
