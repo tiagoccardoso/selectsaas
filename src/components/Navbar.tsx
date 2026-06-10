@@ -45,10 +45,16 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link
-              href="#solucoes"
+              href="/login"
+              className="px-4 py-2 text-sm font-medium text-on-surface-variant border border-surface-highest rounded-lg hover:border-primary/40 hover:text-primary transition-colors"
+            >
+              Entrar
+            </Link>
+            <Link
+              href="/suporte"
               className="px-4 py-2 text-sm font-medium text-primary border border-primary/40 rounded-lg hover:bg-primary/10 transition-colors"
             >
-              Ver Soluções
+              Suporte
             </Link>
           </div>
 
@@ -71,14 +77,21 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-surface-low border-b border-surface-high">
           <div className="px-4 py-4 space-y-3">
-            {["#solucoes", "#como-funciona", "#segmentos", "#contato"].map((href) => (
+            {[
+              { href: "#solucoes", label: "Soluções" },
+              { href: "#como-funciona", label: "Como Funciona" },
+              { href: "#segmentos", label: "Segmentos" },
+              { href: "#contato", label: "Contato" },
+              { href: "/login", label: "Entrar" },
+              { href: "/suporte", label: "Suporte" },
+            ].map((item) => (
               <Link
-                key={href}
-                href={href}
+                key={item.href}
+                href={item.href}
                 className="block text-on-surface-variant hover:text-primary transition-colors py-2 text-sm"
                 onClick={() => setMenuOpen(false)}
               >
-                {href === "#solucoes" ? "Soluções" : href === "#como-funciona" ? "Como Funciona" : href === "#segmentos" ? "Segmentos" : "Contato"}
+                {item.label}
               </Link>
             ))}
           </div>

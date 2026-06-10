@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --font-sora: "Sora";
+    --font-inter: "Inter";
+  }
+
   * {
     box-sizing: border-box;
   }
@@ -14,6 +19,7 @@
   body {
     background-color: #10131a;
     color: #e1e2eb;
+    font-family: var(--font-inter), Inter, system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {

@@ -21,13 +21,22 @@ export default function ContactForm({ productName, productSlug }: ContactFormPro
     e.preventDefault();
     setStatus("loading");
 
-    // Simulated form submission — ready for real integration
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, productSlug }),
+      });
 
-    // TODO: integrate with CRM, email service or API endpoint
-    console.log("Form submitted:", { ...formData, product: productSlug });
+      if (!response.ok) {
+        setStatus("error");
+        return;
+      }
 
-    setStatus("success");
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {

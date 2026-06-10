@@ -1,0 +1,43 @@
+{
+  "created": [
+    ".env.example",
+    "middleware.ts",
+    "migrations/0001_selectsaas_support_neon.sql",
+    "src/app/admin/page.tsx",
+    "src/app/api/admin/contact-messages/[id]/route.ts",
+    "src/app/api/admin/contact-messages/route.ts",
+    "src/app/api/admin/knowledge/[id]/route.ts",
+    "src/app/api/admin/knowledge/route.ts",
+    "src/app/api/admin/users/[id]/route.ts",
+    "src/app/api/admin/users/route.ts",
+    "src/app/api/auth/login/route.ts",
+    "src/app/api/auth/logout/route.ts",
+    "src/app/api/auth/me/route.ts",
+    "src/app/api/auth/register/route.ts",
+    "src/app/api/contact/route.ts",
+    "src/app/api/support/ai/route.ts",
+    "src/app/api/support/tickets/[id]/messages/route.ts",
+    "src/app/api/support/tickets/[id]/route.ts",
+    "src/app/api/support/tickets/route.ts",
+    "src/app/login/page.tsx",
+    "src/app/suporte/ia/page.tsx",
+    "src/app/suporte/page.tsx",
+    "src/app/suporte/tickets/[id]/page.tsx",
+    "src/components/AppShell.tsx",
+    "src/components/StatusBadge.tsx",
+    "src/lib/api-response.ts",
+    "src/lib/auth.ts",
+    "src/lib/db.ts",
+    "src/lib/password.ts",
+    "src/lib/support-ai.ts",
+    "src/lib/validators.ts"
+  ],
+  "modified": [
+    "package-lock.json",
+    "package.json",
+    "src/app/globals.css",
+    "src/app/layout.tsx",
+    "src/components/ContactForm.tsx",
+    "src/components/Navbar.tsx"
+  ]
+}
