@@ -13,11 +13,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (pathname === "/login" && hasSession) {
-    const supportUrl = request.nextUrl.clone();
-    supportUrl.pathname = "/suporte";
-    supportUrl.search = "";
-    return NextResponse.redirect(supportUrl);
+  if (pathname === "/login" && hasSession && !request.nextUrl.searchParams.has("next")) {
+    const portalUrl = request.nextUrl.clone();
+    portalUrl.pathname = "/portal";
+    portalUrl.search = "";
+    return NextResponse.redirect(portalUrl);
   }
 
   return NextResponse.next();

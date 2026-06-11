@@ -51,10 +51,10 @@ export default function Navbar() {
               Entrar
             </Link>
             <Link
-              href="/suporte"
+              href="/portal"
               className="px-4 py-2 text-sm font-medium text-primary border border-primary/40 rounded-lg hover:bg-primary/10 transition-colors"
             >
-              Suporte
+              Acessar portal do suporte com IA
             </Link>
           </div>
 
@@ -83,7 +83,7 @@ export default function Navbar() {
               { href: "#segmentos", label: "Segmentos" },
               { href: "#contato", label: "Contato" },
               { href: "/login", label: "Entrar" },
-              { href: "/suporte", label: "Suporte" },
+              { href: "/portal", label: "Acessar portal do suporte com IA" },
             ].map((item) => (
               <Link
                 key={item.href}
