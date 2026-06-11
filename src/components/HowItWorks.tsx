@@ -42,7 +42,10 @@ export default function HowItWorks() {
           {steps.map((step, index) => (
             <div key={step.number} className="relative">
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-primary/40 to-transparent z-0" />
+                <div
+                  className="hidden lg:block absolute left-16 right-[-2rem] top-7 h-px bg-gradient-to-r from-primary/40 to-transparent"
+                  aria-hidden="true"
+                />
               )}
               <div className="relative z-10">
                 <div className="w-14 h-14 bg-primary/10 border border-primary/30 rounded-xl flex items-center justify-center mb-4">

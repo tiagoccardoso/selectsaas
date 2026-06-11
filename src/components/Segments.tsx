@@ -1,16 +1,10 @@
 const segments = [
-  { icon: "🏥", name: "Saúde" },
   { icon: "🦷", name: "Odontologia" },
   { icon: "🌱", name: "Agronegócio" },
-  { icon: "🚚", name: "Logística" },
   { icon: "🎓", name: "Educação" },
-  { icon: "🏢", name: "Imobiliário" },
-  { icon: "⚖️", name: "Jurídico" },
-  { icon: "🍽️", name: "Alimentação" },
-  { icon: "💰", name: "Financeiro" },
-  { icon: "🏗️", name: "Construção" },
-  { icon: "🛒", name: "Varejo" },
-  { icon: "💆", name: "Estética & Bem-estar" },
+  { icon: "💼", name: "Negócios" },
+  { icon: "🏥", name: "Fisioterapia" },
+  { icon: "🥗", name: "Nutrição" },
 ];
 
 export default function Segments() {
@@ -22,12 +16,12 @@ export default function Segments() {
             Segmentos atendidos
           </h2>
           <p className="text-on-surface-variant text-lg max-w-2xl mx-auto">
-            Soluções especializadas para os mais diversos mercados.
-            Cada sistema foi desenvolvido com profundo conhecimento do segmento.
+            Soluções especializadas para mercados com necessidades específicas.
+            Cada sistema foi desenvolvido com conhecimento do segmento.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {segments.map((segment) => (
             <div
               key={segment.name}

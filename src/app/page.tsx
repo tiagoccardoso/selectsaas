@@ -47,8 +47,8 @@ export default function Home() {
               Pronto para transformar seu negócio?
             </h2>
             <p className="text-on-surface-variant text-lg max-w-2xl mx-auto mb-8">
-              Junte-se a mais de 10.000 empresas que já utilizam soluções do
-              SelectSaaS para crescer com mais eficiência.
+              Conheça soluções SaaS selecionadas para organizar processos,
+              reduzir retrabalho e apoiar o crescimento do seu negócio.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a

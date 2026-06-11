@@ -8,12 +8,7 @@ export default function Benefits() {
     {
       icon: "🔒",
       title: "Segurança enterprise",
-      description: "Dados protegidos com criptografia de ponta a ponta, conformidade com LGPD e backups automáticos.",
-    },
-    {
-      icon: "📊",
-      title: "Relatórios em tempo real",
-      description: "Dashboards e insights em tempo real para tomada de decisões mais inteligentes e ágeis.",
+      description: "Dados protegidos com criptografia, conformidade com LGPD e backups automáticos.",
     },
     {
       icon: "🤝",
@@ -23,12 +18,7 @@ export default function Benefits() {
     {
       icon: "📱",
       title: "Acesso mobile",
-      description: "Acesse de qualquer dispositivo — computador, tablet ou smartphone — com a mesma experiência premium.",
-    },
-    {
-      icon: "🔄",
-      title: "Integrações nativas",
-      description: "Conecte com as ferramentas que você já usa: ERPs, gateways de pagamento, WhatsApp, e-mail e muito mais.",
+      description: "Acesse de qualquer dispositivo: computador, tablet ou smartphone, com a mesma experiência premium.",
     },
   ];
 
@@ -45,7 +35,7 @@ export default function Benefits() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {benefits.map((benefit) => (
             <div
               key={benefit.title}

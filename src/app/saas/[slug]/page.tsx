@@ -19,7 +19,7 @@ export async function generateMetadata({
   const product = getSaasBySlug(params.slug);
   if (!product) return {};
   return {
-    title: `${product.name} — SelectSaaS`,
+    title: `${product.name} | SelectSaaS`,
     description: product.description,
   };
 }

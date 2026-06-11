@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SelectSaaS — Marketplace Premium de SaaS",
+  title: "SelectSaaS | Marketplace Premium de SaaS",
   description:
     "Encontre e contrate os melhores sistemas SaaS para o seu segmento. Soluções premium para saúde, educação, logística, agronegócio e muito mais.",
   keywords: "saas, marketplace, software, gestão, sistema, premium",
   openGraph: {
-    title: "SelectSaaS — Marketplace Premium de SaaS",
+    title: "SelectSaaS | Marketplace Premium de SaaS",
     description: "Os melhores sistemas SaaS para cada segmento do mercado.",
     type: "website",
   },

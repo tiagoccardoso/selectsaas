@@ -21,7 +21,7 @@ export default function Hero() {
 
         <p className="text-on-surface-variant text-lg sm:text-xl max-w-3xl mx-auto mb-12 leading-relaxed">
           Conectamos empresas às melhores soluções de software do mercado.
-          Saúde, educação, logística, agronegócio e muito mais — encontre o
+          Saúde, educação, logística, agronegócio e muito mais. Encontre o
           SaaS ideal para transformar sua operação.
         </p>
 
@@ -40,20 +40,6 @@ export default function Hero() {
           </Link>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-          {[
-            { value: "50+", label: "Soluções disponíveis" },
-            { value: "10k+", label: "Empresas atendidas" },
-            { value: "30+", label: "Segmentos de mercado" },
-            { value: "99.9%", label: "Uptime garantido" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="font-sora text-2xl font-bold text-primary">{stat.value}</div>
-              <div className="text-on-surface-variant text-sm mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

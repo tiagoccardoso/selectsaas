@@ -10,8 +10,8 @@ export default function Footer() {
               SelectSaaS
             </span>
             <p className="text-on-surface-variant text-sm leading-relaxed max-w-sm">
-              O maior marketplace de soluções SaaS do Brasil. Conectamos empresas
-              às melhores ferramentas de software para cada segmento de mercado.
+              Marketplace de soluções SaaS para conectar empresas a ferramentas
+              de software adequadas a cada segmento de mercado.
             </p>
             <div className="flex gap-4 mt-6">
               {["LinkedIn", "Twitter", "Instagram"].map((social) => (
@@ -28,7 +28,7 @@ export default function Footer() {
           <div>
             <h4 className="font-sora font-semibold text-on-surface mb-4">Soluções</h4>
             <ul className="space-y-2">
-              {["Saúde", "Educação", "Logística", "Agronegócio", "Imobiliário"].map((item) => (
+              {["OdontoGestão", "EduMaster", "Negócios", "Agro", "FisioGestão", "NutriGestão"].map((item) => (
                 <li key={item}>
                   <span className="text-on-surface-variant hover:text-primary transition-colors text-sm cursor-pointer">
                     {item}

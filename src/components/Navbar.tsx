@@ -36,12 +36,6 @@ export default function Navbar() {
               Segmentos
             </Link>
             <Link
-              href="/solicitar-saas"
-              className="text-on-surface-variant hover:text-primary transition-colors text-sm"
-            >
-              SaaS personalizado
-            </Link>
-            <Link
               href="#contato"
               className="text-on-surface-variant hover:text-primary transition-colors text-sm"
             >
@@ -60,7 +54,7 @@ export default function Navbar() {
               href="/solicitar-saas"
               className="px-4 py-2 text-sm font-medium text-primary border border-primary/40 rounded-lg hover:bg-primary/10 transition-colors"
             >
-              Solicitar SaaS personalizado
+              SaaS Personalizado
             </Link>
           </div>
 
@@ -87,10 +81,9 @@ export default function Navbar() {
               { href: "#solucoes", label: "Soluções" },
               { href: "#como-funciona", label: "Como Funciona" },
               { href: "#segmentos", label: "Segmentos" },
-              { href: "/solicitar-saas", label: "SaaS personalizado" },
               { href: "#contato", label: "Contato" },
               { href: "/login", label: "Entrar" },
-              { href: "/solicitar-saas", label: "Solicitar SaaS personalizado" },
+              { href: "/solicitar-saas", label: "SaaS Personalizado" },
             ].map((item) => (
               <Link
                 key={item.href}
