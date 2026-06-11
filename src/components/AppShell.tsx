@@ -20,6 +20,7 @@ interface ApiResponse<T> {
 const navItems = [
   { href: "/suporte", label: "Tickets" },
   { href: "/suporte/ia", label: "IA de suporte" },
+  { href: "/suporte/solicitacoes-saas", label: "SaaS personalizado" },
 ];
 
 export default function AppShell({ children }: { children: ReactNode }) {
@@ -78,7 +79,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
               SelectSaaS
             </Link>
             <p className="text-xs text-on-surface-variant">
-              Área segura de suporte e atendimento
+              Área segura de suporte, IA e SaaS personalizado
             </p>
           </div>
 

@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasSession = Boolean(request.cookies.get(SESSION_COOKIE_NAME)?.value);
 
-  if ((pathname.startsWith("/suporte") || pathname.startsWith("/admin")) && !hasSession) {
+  if ((pathname.startsWith("/suporte") || pathname.startsWith("/admin") || pathname.startsWith("/solicitar-saas")) && !hasSession) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("next", pathname);
@@ -24,5 +24,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/suporte/:path*", "/admin/:path*", "/login"],
+  matcher: ["/suporte/:path*", "/admin/:path*", "/solicitar-saas", "/login"],
 };

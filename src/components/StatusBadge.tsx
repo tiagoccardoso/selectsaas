@@ -20,8 +20,26 @@ const contactStatus: Record<string, string> = {
   resolved: "Resolvida",
 };
 
-export function StatusBadge({ value, type = "ticket" }: { value: string; type?: "ticket" | "priority" | "contact" }) {
-  const label = type === "priority" ? priorityLabels[value] : type === "contact" ? contactStatus[value] : ticketStatus[value];
+const customSaasStatus: Record<string, string> = {
+  requested: "Solicitado",
+  under_review: "Em análise",
+  budget_sent: "Orçamento enviado",
+  budget_approved: "Orçamento aprovado",
+  budget_declined: "Orçamento recusado",
+  in_build: "Em construção",
+  in_review: "Em revisão",
+  completed: "Concluído",
+  cancelled: "Cancelado",
+};
+
+export function StatusBadge({ value, type = "ticket" }: { value: string; type?: "ticket" | "priority" | "contact" | "customSaas" }) {
+  const label = type === "priority"
+    ? priorityLabels[value]
+    : type === "contact"
+      ? contactStatus[value]
+      : type === "customSaas"
+        ? customSaasStatus[value]
+        : ticketStatus[value];
 
   return (
     <span className="inline-flex rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
