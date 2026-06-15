@@ -89,6 +89,7 @@ export async function getSessionUserByToken(token?: string): Promise<SessionUser
     INNER JOIN app_users u ON u.id = s.user_id
     WHERE s.token_hash = ${hashToken(token)}
       AND s.expires_at > now()
+      AND u.is_active = true
     LIMIT 1
   `;
 

@@ -11,6 +11,7 @@ interface UserRow {
   email: string;
   role: "admin" | "user";
   password_hash: string;
+  is_active: boolean;
 }
 
 export async function POST(request: NextRequest) {
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     const rows = await sql<UserRow[]>`
-      SELECT id, name, email, role, password_hash
+      SELECT id, name, email, role, password_hash, is_active
       FROM app_users
       WHERE email = ${email}
       LIMIT 1
@@ -34,6 +35,10 @@ export async function POST(request: NextRequest) {
 
     if (!user || !verifyPassword(password, user.password_hash)) {
       return jsonError("E-mail ou senha inválidos.", 401);
+    }
+
+    if (!user.is_active) {
+      return jsonError("Este usuário está desativado. Entre em contato com o administrador.", 403);
     }
 
     const token = await createSession(user.id);

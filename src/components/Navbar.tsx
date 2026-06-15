@@ -1,10 +1,46 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+}
+
+interface ApiResponse<T> {
+  ok: boolean;
+  data?: T;
+  error?: string;
+}
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadUser() {
+      const response = await fetch("/api/auth/me", { cache: "no-store" });
+      const payload = (await response.json()) as ApiResponse<{ user: User }>;
+
+      if (alive && response.ok && payload.ok && payload.data?.user) {
+        setUser(payload.data.user);
+      }
+    }
+
+    loadUser().catch(() => undefined);
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const accessHref = user ? "/portal" : "/login";
+  const accessLabel = user ? "Minha área" : "Entrar";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-surface-high">
@@ -45,10 +81,10 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link
-              href="/login"
+              href={accessHref}
               className="px-4 py-2 text-sm font-medium text-on-surface-variant border border-surface-highest rounded-lg hover:border-primary/40 hover:text-primary transition-colors"
             >
-              Entrar
+              {accessLabel}
             </Link>
             <Link
               href="/solicitar-saas"
@@ -82,7 +118,7 @@ export default function Navbar() {
               { href: "#como-funciona", label: "Como Funciona" },
               { href: "#segmentos", label: "Segmentos" },
               { href: "#contato", label: "Contato" },
-              { href: "/login", label: "Entrar" },
+              { href: accessHref, label: accessLabel },
               { href: "/solicitar-saas", label: "SaaS Personalizado" },
             ].map((item) => (
               <Link

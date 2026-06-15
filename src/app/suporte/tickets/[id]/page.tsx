@@ -12,6 +12,8 @@ interface Ticket {
   description: string;
   category: string;
   priority: string;
+  system_id: string | null;
+  system_name: string;
   status: string;
   created_at: string;
   updated_at: string;
@@ -28,19 +30,29 @@ interface Message {
   created_at: string;
 }
 
+interface Attachment {
+  id: string;
+  file_name: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
+  url: string;
+}
+
 interface ApiResponse<T> { ok: boolean; data?: T; error?: string; }
 
 export default function TicketDetailPage() {
   const params = useParams<{ id: string }>();
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function loadTicket() {
     const response = await fetch(`/api/support/tickets/${params.id}`, { cache: "no-store" });
-    const payload = (await response.json()) as ApiResponse<{ ticket: Ticket; messages: Message[] }>;
+    const payload = (await response.json()) as ApiResponse<{ ticket: Ticket; messages: Message[]; attachments: Attachment[] }>;
 
     if (!response.ok || !payload.ok || !payload.data) {
       setError(payload.error || "Não foi possível carregar o ticket.");
@@ -50,6 +62,7 @@ export default function TicketDetailPage() {
 
     setTicket(payload.data.ticket);
     setMessages(payload.data.messages);
+    setAttachments(payload.data.attachments || []);
     setLoading(false);
   }
 
@@ -90,7 +103,7 @@ export default function TicketDetailPage() {
     const response = await fetch(`/api/support/tickets/${params.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "resolved", priority: ticket?.priority || "medium" }),
+      body: JSON.stringify({ status: "resolved" }),
     });
     const payload = (await response.json()) as ApiResponse<{ updated: boolean }>;
     setSaving(false);
@@ -126,9 +139,36 @@ export default function TicketDetailPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <StatusBadge value={ticket.status} />
-                <StatusBadge value={ticket.priority} type="priority" />
+                <span className="inline-flex rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                  {ticket.system_name || "Sistema não informado"}
+                </span>
               </div>
             </div>
+
+            {attachments.length > 0 && (
+              <div className="mt-8 rounded-2xl border border-surface-high bg-background p-4">
+                <h2 className="font-sora text-lg font-semibold">Imagens anexadas</h2>
+                <p className="mt-1 text-sm text-on-surface-variant">Anexos protegidos por autenticação. Somente o dono do ticket e administradores conseguem visualizar.</p>
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {attachments.map((attachment) => (
+                    <a
+                      key={attachment.id}
+                      href={attachment.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-xl border border-surface-high bg-surface-low p-3 transition hover:border-primary/40"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={attachment.url} alt={attachment.file_name} className="h-44 w-full rounded-lg object-cover" />
+                      <div className="mt-3 text-xs text-on-surface-variant">
+                        <p className="truncate font-semibold text-on-surface">{attachment.file_name}</p>
+                        <p>{Math.ceil(attachment.size_bytes / 1024)} KB • {formatDate(attachment.created_at)}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="mt-8 space-y-4">
               {messages.map((message) => (
@@ -176,6 +216,10 @@ export default function TicketDetailPage() {
               <h2 className="font-sora text-lg font-semibold">Detalhes</h2>
               <dl className="mt-4 space-y-3 text-sm">
                 <div>
+                  <dt className="text-on-surface-variant">Sistema</dt>
+                  <dd className="font-semibold">{ticket.system_name || "Não informado"}</dd>
+                </div>
+                <div>
                   <dt className="text-on-surface-variant">Categoria</dt>
                   <dd className="font-semibold">{ticket.category}</dd>
                 </div>
@@ -188,7 +232,10 @@ export default function TicketDetailPage() {
                   <dd className="break-all font-semibold">{ticket.user_email}</dd>
                 </div>
               </dl>
-              {!["resolved", "closed"].includes(ticket.status) && (
+              {![
+                "resolved",
+                "closed",
+              ].includes(ticket.status) && (
                 <button
                   className="mt-6 w-full rounded-lg border border-primary/40 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10 disabled:opacity-60"
                   disabled={saving}

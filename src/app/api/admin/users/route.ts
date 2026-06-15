@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     const users = await sql`
       SELECT
-        u.id, u.name, u.email, u.role, u.created_at, u.updated_at,
+        u.id, u.name, u.email, u.role, u.is_active, u.created_at, u.updated_at,
         COUNT(t.id)::int AS tickets_count
       FROM app_users u
       LEFT JOIN support_tickets t ON t.user_id = u.id

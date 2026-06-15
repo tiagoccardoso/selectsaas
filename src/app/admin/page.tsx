@@ -11,12 +11,15 @@ interface Ticket {
   description: string;
   category: string;
   priority: string;
+  system_id: string | null;
+  system_name: string;
   status: string;
   created_at: string;
   updated_at: string;
   user_name: string;
   user_email: string;
   messages_count: number;
+  attachments_count: number;
 }
 
 interface ContactMessage {
@@ -37,7 +40,19 @@ interface UserRow {
   name: string;
   email: string;
   role: "admin" | "user";
+  is_active: boolean;
   created_at: string;
+  tickets_count: number;
+}
+
+
+interface SupportSystem {
+  id: string;
+  name: string;
+  active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
   tickets_count: number;
 }
 
@@ -74,13 +89,14 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-type Tab = "tickets" | "contacts" | "customSaas" | "knowledge" | "users";
+type Tab = "tickets" | "contacts" | "customSaas" | "knowledge" | "users" | "systems";
 
 export default function AdminPage() {
   const [tab, setTab] = useState<Tab>("tickets");
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [contacts, setContacts] = useState<ContactMessage[]>([]);
   const [users, setUsers] = useState<UserRow[]>([]);
+  const [systems, setSystems] = useState<SupportSystem[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [customSaasRequests, setCustomSaasRequests] = useState<
     CustomSaasRequest[]
@@ -120,6 +136,7 @@ export default function AdminPage() {
         ticketsData,
         contactsData,
         usersData,
+        systemsData,
         knowledgeData,
         customSaasData,
       ] = await Promise.all([
@@ -132,6 +149,9 @@ export default function AdminPage() {
         fetch("/api/admin/users", { cache: "no-store" }).then((response) =>
           parse<{ users: UserRow[] }>(response),
         ),
+        fetch("/api/support/systems?all=1", { cache: "no-store" }).then((response) =>
+          parse<{ systems: SupportSystem[] }>(response),
+        ),
         fetch("/api/admin/knowledge", { cache: "no-store" }).then((response) =>
           parse<{ articles: Article[] }>(response),
         ),
@@ -143,6 +163,7 @@ export default function AdminPage() {
       setTickets(ticketsData.tickets || []);
       setContacts(contactsData.messages || []);
       setUsers(usersData.users || []);
+      setSystems(systemsData.systems || []);
       setArticles(knowledgeData.articles || []);
       setCustomSaasRequests(customSaasData.requests || []);
     } catch (loadError) {
@@ -163,7 +184,7 @@ export default function AdminPage() {
   async function updateTicket(
     ticket: Ticket,
     status: string,
-    priority = ticket.priority,
+    systemId = ticket.system_id,
   ) {
     setSaving(true);
     setError(null);
@@ -172,7 +193,7 @@ export default function AdminPage() {
         await fetch(`/api/support/tickets/${ticket.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status, priority }),
+          body: JSON.stringify({ status, systemId }),
         }),
       );
       await loadAll();
@@ -181,6 +202,83 @@ export default function AdminPage() {
         updateError instanceof Error
           ? updateError.message
           : "Não foi possível atualizar o ticket.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function createSystem(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      const form = new FormData(event.currentTarget);
+      await parse<{ id: string }>(
+        await fetch("/api/support/systems", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(Object.fromEntries(form.entries())),
+        }),
+      );
+      event.currentTarget.reset();
+      await loadAll();
+    } catch (createError) {
+      setError(
+        createError instanceof Error
+          ? createError.message
+          : "Não foi possível salvar o sistema.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function updateSystem(event: FormEvent<HTMLFormElement>, system: SupportSystem) {
+    event.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      const form = new FormData(event.currentTarget);
+      await parse<{ updated: boolean }>(
+        await fetch(`/api/support/systems/${system.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.get("name"),
+            active: form.get("active") === "true",
+          }),
+        }),
+      );
+      await loadAll();
+    } catch (updateError) {
+      setError(
+        updateError instanceof Error
+          ? updateError.message
+          : "Não foi possível atualizar o sistema.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function deactivateSystem(system: SupportSystem) {
+    if (!window.confirm(`Remover o sistema ${system.name} da lista de novos tickets? Tickets antigos continuarão preservados.`)) {
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+    try {
+      await parse<{ deactivated: boolean }>(
+        await fetch(`/api/support/systems/${system.id}`, { method: "DELETE" }),
+      );
+      await loadAll();
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Não foi possível remover o sistema.",
       );
     } finally {
       setSaving(false);
@@ -210,15 +308,22 @@ export default function AdminPage() {
     }
   }
 
-  async function updateUserRole(user: UserRow, role: "admin" | "user") {
+  async function updateUser(event: FormEvent<HTMLFormElement>, user: UserRow) {
+    event.preventDefault();
     setSaving(true);
     setError(null);
     try {
+      const form = new FormData(event.currentTarget);
       await parse<{ updated: boolean }>(
         await fetch(`/api/admin/users/${user.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ role }),
+          body: JSON.stringify({
+            name: form.get("name"),
+            email: form.get("email"),
+            role: form.get("role"),
+            isActive: form.get("isActive") === "true",
+          }),
         }),
       );
       await loadAll();
@@ -227,6 +332,29 @@ export default function AdminPage() {
         updateError instanceof Error
           ? updateError.message
           : "Não foi possível atualizar o usuário.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function deactivateUser(user: UserRow) {
+    if (!window.confirm(`Desativar o usuário ${user.name}? O histórico de tickets será preservado.`)) {
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+    try {
+      await parse<{ deactivated: boolean }>(
+        await fetch(`/api/admin/users/${user.id}`, { method: "DELETE" }),
+      );
+      await loadAll();
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Não foi possível desativar o usuário.",
       );
     } finally {
       setSaving(false);
@@ -319,6 +447,7 @@ export default function AdminPage() {
           ["contacts", "Contatos"],
           ["knowledge", "Base da IA"],
           ["users", "Usuários"],
+          ["systems", "Sistemas"],
         ].map(([key, label]) => (
           <button
             key={key}
@@ -358,7 +487,9 @@ export default function AdminPage() {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <StatusBadge value={ticket.status} />
-                      <StatusBadge value={ticket.priority} type="priority" />
+                      <span className="inline-flex rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                        {ticket.system_name || "Sistema não informado"}
+                      </span>
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
@@ -369,32 +500,53 @@ export default function AdminPage() {
                       {ticket.messages_count} mensagem(ns)
                     </span>
                     <span className="rounded-full bg-surface-high px-2.5 py-1">
+                      {ticket.attachments_count} anexo(s)
+                    </span>
+                    <span className="rounded-full bg-surface-high px-2.5 py-1">
                       Atualizado em {formatDate(ticket.updated_at)}
                     </span>
                   </div>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <Link
-                      className="rounded-lg border border-primary/40 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10"
-                      href={`/suporte/tickets/${ticket.id}`}
-                    >
-                      Abrir detalhes
-                    </Link>
-                    {[
-                      ["in_progress", "Em andamento"],
-                      ["answered", "Respondido"],
-                      ["resolved", "Resolvido"],
-                      ["closed", "Fechado"],
-                    ].map(([value, label]) => (
-                      <button
-                        key={value}
-                        className="rounded-lg border border-surface-highest px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary/40 hover:text-primary disabled:opacity-60"
+                  <div className="mt-5 grid gap-3 lg:grid-cols-[220px_1fr]">
+                    <label className="block text-xs font-semibold text-on-surface-variant">
+                      Sistema do ticket
+                      <select
+                        className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-3 py-2 text-xs text-on-surface outline-none focus:border-primary/60"
+                        value={ticket.system_id || ""}
                         disabled={saving}
-                        onClick={() => updateTicket(ticket, value)}
-                        type="button"
+                        onChange={(event) => updateTicket(ticket, ticket.status, event.target.value)}
                       >
-                        {label}
-                      </button>
-                    ))}
+                        {!ticket.system_id && <option value="">Sem sistema</option>}
+                        {systems.map((system) => (
+                          <option key={system.id} value={system.id}>
+                            {system.name}{system.active ? "" : " (inativo)"}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className="flex flex-wrap items-end gap-2">
+                      <Link
+                        className="rounded-lg border border-primary/40 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10"
+                        href={`/suporte/tickets/${ticket.id}`}
+                      >
+                        Abrir detalhes
+                      </Link>
+                      {[
+                        ["in_progress", "Em andamento"],
+                        ["answered", "Respondido"],
+                        ["resolved", "Resolvido"],
+                        ["closed", "Fechado"],
+                      ].map(([value, label]) => (
+                        <button
+                          key={value}
+                          className="rounded-lg border border-surface-highest px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary/40 hover:text-primary disabled:opacity-60"
+                          disabled={saving}
+                          onClick={() => updateTicket(ticket, value)}
+                          type="button"
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </article>
               ))}
@@ -638,44 +790,171 @@ export default function AdminPage() {
             </section>
           )}
 
+          {tab === "systems" && (
+            <section className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+              <form
+                className="rounded-2xl border border-surface-high bg-surface-low p-5"
+                onSubmit={createSystem}
+              >
+                <h2 className="font-sora text-lg font-semibold">Novo sistema</h2>
+                <p className="mt-2 text-sm text-on-surface-variant">
+                  Cadastre sistemas que poderão ser selecionados pelo usuário ao abrir um ticket.
+                </p>
+                <label className="mt-5 block text-sm font-medium text-on-surface-variant">
+                  Nome do sistema *
+                  <input
+                    className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-4 py-3 text-on-surface outline-none focus:border-primary/60"
+                    name="name"
+                    required
+                    minLength={2}
+                    placeholder="Ex.: Novo SaaS"
+                  />
+                </label>
+                <button
+                  className="mt-5 w-full rounded-lg bg-primary px-5 py-3 font-semibold text-primary-on glow disabled:opacity-60"
+                  disabled={saving}
+                  type="submit"
+                >
+                  Adicionar sistema
+                </button>
+              </form>
+
+              <div className="space-y-4">
+                {systems.map((system) => (
+                  <form
+                    key={system.id}
+                    className="rounded-2xl border border-surface-high bg-surface-low p-5"
+                    onSubmit={(event) => updateSystem(event, system)}
+                  >
+                    <div className="grid gap-4 md:grid-cols-[1fr_180px]">
+                      <label className="block text-sm font-medium text-on-surface-variant">
+                        Sistema
+                        <input
+                          className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-4 py-3 text-on-surface outline-none focus:border-primary/60"
+                          name="name"
+                          defaultValue={system.name}
+                          required
+                          minLength={2}
+                        />
+                      </label>
+                      <label className="block text-sm font-medium text-on-surface-variant">
+                        Status
+                        <select
+                          className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-4 py-3 text-on-surface outline-none focus:border-primary/60"
+                          name="active"
+                          defaultValue={system.active ? "true" : "false"}
+                        >
+                          <option value="true">Ativo</option>
+                          <option value="false">Inativo</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-on-surface-variant">
+                      <span className="rounded-full bg-surface-high px-2.5 py-1">
+                        {system.tickets_count} ticket(s) vinculados
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          className="rounded-lg border border-primary/40 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10 disabled:opacity-60"
+                          disabled={saving}
+                          type="submit"
+                        >
+                          Salvar
+                        </button>
+                        <button
+                          className="rounded-lg border border-error/30 px-3 py-2 text-xs font-semibold text-error hover:bg-error/10 disabled:opacity-60"
+                          disabled={saving || !system.active}
+                          onClick={() => deactivateSystem(system)}
+                          type="button"
+                        >
+                          Remover da lista
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                ))}
+                {systems.length === 0 && (
+                  <EmptyState text="Nenhum sistema cadastrado." />
+                )}
+              </div>
+            </section>
+          )}
+
           {tab === "users" && (
             <section className="space-y-4">
               {users.map((user) => (
-                <article
+                <form
                   key={user.id}
-                  className="flex flex-col gap-4 rounded-2xl border border-surface-high bg-surface-low p-5 sm:flex-row sm:items-center sm:justify-between"
+                  className="rounded-2xl border border-surface-high bg-surface-low p-5"
+                  onSubmit={(event) => updateUser(event, user)}
                 >
-                  <div>
-                    <h2 className="font-sora text-lg font-semibold">
-                      {user.name}
-                    </h2>
-                    <p className="mt-1 text-sm text-on-surface-variant">
-                      {user.email}
-                    </p>
-                    <p className="mt-2 text-xs text-on-surface-variant">
-                      {user.tickets_count} ticket(s) • Criado em{" "}
-                      {formatDate(user.created_at)}
-                    </p>
+                  <div className="grid gap-4 lg:grid-cols-[1fr_1fr_160px_160px]">
+                    <label className="block text-sm font-medium text-on-surface-variant">
+                      Nome
+                      <input
+                        className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-4 py-3 text-on-surface outline-none focus:border-primary/60"
+                        name="name"
+                        defaultValue={user.name}
+                        required
+                        minLength={2}
+                      />
+                    </label>
+                    <label className="block text-sm font-medium text-on-surface-variant">
+                      E-mail
+                      <input
+                        className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-4 py-3 text-on-surface outline-none focus:border-primary/60"
+                        name="email"
+                        type="email"
+                        defaultValue={user.email}
+                        required
+                      />
+                    </label>
+                    <label className="block text-sm font-medium text-on-surface-variant">
+                      Perfil
+                      <select
+                        className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-4 py-3 text-on-surface outline-none focus:border-primary/60"
+                        name="role"
+                        defaultValue={user.role}
+                      >
+                        <option value="user">Usuário</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </label>
+                    <label className="block text-sm font-medium text-on-surface-variant">
+                      Status
+                      <select
+                        className="mt-1.5 w-full rounded-lg border border-surface-highest bg-background px-4 py-3 text-on-surface outline-none focus:border-primary/60"
+                        name="isActive"
+                        defaultValue={user.is_active ? "true" : "false"}
+                      >
+                        <option value="true">Ativo</option>
+                        <option value="false">Inativo</option>
+                      </select>
+                    </label>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                      {user.role === "admin" ? "Admin" : "Usuário"}
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-on-surface-variant">
+                    <span className="rounded-full bg-surface-high px-2.5 py-1">
+                      {user.tickets_count} ticket(s) • Criado em {formatDate(user.created_at)}
                     </span>
-                    <button
-                      className="rounded-lg border border-surface-highest px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary/40 hover:text-primary disabled:opacity-60"
-                      disabled={saving}
-                      onClick={() =>
-                        updateUserRole(
-                          user,
-                          user.role === "admin" ? "user" : "admin",
-                        )
-                      }
-                      type="button"
-                    >
-                      Tornar {user.role === "admin" ? "usuário" : "admin"}
-                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        className="rounded-lg border border-primary/40 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10 disabled:opacity-60"
+                        disabled={saving}
+                        type="submit"
+                      >
+                        Salvar usuário
+                      </button>
+                      <button
+                        className="rounded-lg border border-error/30 px-3 py-2 text-xs font-semibold text-error hover:bg-error/10 disabled:opacity-60"
+                        disabled={saving || !user.is_active}
+                        onClick={() => deactivateUser(user)}
+                        type="button"
+                      >
+                        Excluir/desativar
+                      </button>
+                    </div>
                   </div>
-                </article>
+                </form>
               ))}
               {users.length === 0 && (
                 <EmptyState text="Nenhum usuário cadastrado." />

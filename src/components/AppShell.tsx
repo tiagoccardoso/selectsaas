@@ -21,6 +21,7 @@ const navItems = [
   { href: "/suporte", label: "Tickets" },
   { href: "/suporte/ia", label: "IA de suporte" },
   { href: "/suporte/solicitacoes-saas", label: "SaaS personalizado" },
+  { href: "/suporte/perfil", label: "Meu perfil" },
 ];
 
 export default function AppShell({ children }: { children: ReactNode }) {
@@ -87,6 +88,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             <Link
               href="/"
               className="rounded-lg px-3 py-2 text-sm text-on-surface-variant transition-colors hover:bg-surface-high hover:text-primary"
+              prefetch={false}
             >
               Marketplace
             </Link>
@@ -119,7 +121,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
           <div className="flex items-center justify-between gap-3 rounded-xl border border-surface-high bg-surface-low px-3 py-2 lg:min-w-72">
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">{user?.name}</p>
+              <Link href="/suporte/perfil" className="truncate text-sm font-semibold transition hover:text-primary">{user?.name}</Link>
               <p className="truncate text-xs text-on-surface-variant">
                 {user?.role === "admin" ? "Administrador" : "Usuário padrão"}
               </p>
