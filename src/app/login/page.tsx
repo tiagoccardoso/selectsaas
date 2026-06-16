@@ -190,6 +190,14 @@ function LoginForm() {
                 </label>
               )}
 
+              {mode === "login" && (
+                <div className="text-right text-sm">
+                  <Link href="/recuperar-senha" className="font-semibold text-primary transition hover:text-primary-dim">
+                    Esqueci minha senha
+                  </Link>
+                </div>
+              )}
+
               <button
                 className="w-full rounded-lg bg-primary px-5 py-3 font-semibold text-primary-on glow transition hover:bg-primary-dim disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={loading}
