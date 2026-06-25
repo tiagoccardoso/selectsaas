@@ -144,7 +144,8 @@ export const saasProducts: SaasProduct[] = [
       "Portal do paciente planejado",
     ],
     color: "#ffd166",
-    status: "coming_soon",
+    externalUrl: "https://www.fisiohub.app.br/auth/login",
+    status: "available",
   },
   {
     slug: "nutrigestao",
